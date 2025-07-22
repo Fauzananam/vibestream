@@ -1,14 +1,20 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+# Impor router yang telah kita buat
+from app.routers import users
+
 # Membuat instance aplikasi FastAPI
-app = FastAPI()
+app = FastAPI(
+    title="VibeStream API",
+    description="API untuk aplikasi streaming musik VibeStream.",
+    version="0.1.0"
+)
 
 # --- Middleware ---
-# Menambahkan CORS Middleware agar Frontend (React) yang berjalan di domain berbeda (localhost:5173)
-# bisa berkomunikasi dengan Backend (localhost:8000). Ini sangat penting!
+# Menambahkan CORS Middleware agar Frontend (React) bisa berkomunikasi
 origins = [
-    "http://localhost:5173", # URL development React
+    "http://localhost:5173",
     "http://localhost:5173/",
     "http://127.0.0.1:5173",
     "http://127.0.0.1:5173/"
@@ -18,16 +24,22 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"], # Mengizinkan semua metode (GET, POST, dll.)
-    allow_headers=["*"], # Mengizinkan semua header
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
+# --- Routers ---
+# Mendaftarkan router pengguna ke aplikasi utama.
+# Semua endpoint dari users.py sekarang akan aktif.
+app.include_router(users.router)
+
+
 # --- Endpoints ---
-# Membuat endpoint "root" atau "hello world"
+# Endpoint dasar untuk mengecek apakah server berjalan.
 @app.get("/")
 def read_root():
     """
-    Endpoint dasar untuk mengecek apakah server berjalan.
+    Endpoint dasar untuk mengecek status API.
     """
-    return {"message": "Welcome to VibeStream API!"}
+    return {"status": "ok", "message": "Welcome to VibeStream API!"}
