@@ -1,0 +1,40 @@
+.home-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.home-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: var(--border-width) solid var(--color-border);
+  padding-bottom: 20px;
+  margin-bottom: 40px;
+}
+
+.home-header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Jarak antar elemen */
+}
+
+.user-info span {
+  font-size: 0.9rem;
+}
+
+/* Kurangi padding tombol logout agar tidak terlalu besar */
+.user-info .pixel-button {
+  padding: 8px 15px;
+  font-size: 0.8rem;
+}
+
+.home-content h2 {
+  font-size: 1.5rem;
+  color: var(--color-primary);
+}

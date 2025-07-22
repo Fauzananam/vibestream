@@ -1,0 +1,69 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  text-align: center;
+  padding: 20px;
+}
+
+.login-box {
+  background-color: #2a2a2a;
+  padding: 40px;
+  border: var(--border-width) solid var(--color-border);
+  box-shadow: 8px 8px 0px var(--color-shadow);
+}
+
+.title {
+  font-size: 2.5rem; /* 40px */
+  color: var(--color-primary);
+  margin: 0 0 10px 0;
+  text-shadow: 4px 4px 0px var(--color-shadow);
+}
+
+.subtitle {
+  font-size: 1rem; /* 16px */
+  margin-bottom: 40px;
+  color: var(--color-text);
+  /* Efek animasi berkedip */
+  animation: blink 1.5s step-start 0s infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Tombol Pixel yang bisa digunakan kembali */
+.pixel-button {
+  background-color: var(--color-primary);
+  color: var(--color-text);
+  font-family: var(--font-family-pixel);
+  font-size: 1rem;
+  padding: 15px 30px;
+  border: var(--border-width) solid var(--color-border);
+  box-shadow: 4px 4px 0px var(--color-shadow);
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+  text-transform: uppercase;
+}
+
+.pixel-button:hover {
+  background-color: var(--color-primary-hover);
+  box-shadow: 6px 6px 0px var(--color-shadow);
+  transform: translate(-2px, -2px);
+}
+
+.pixel-button:active {
+  box-shadow: 2px 2px 0px var(--color-shadow);
+  transform: translate(2px, 2px);
+}
+
+.pixel-button.accent {
+  background-color: var(--color-accent);
+}
+
+.pixel-button.accent:hover {
+  background-color: #ff6e66; /* Warna hover untuk aksen */
+}
