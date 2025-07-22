@@ -5,6 +5,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
 import ProtectedRoute from './components/ProtectedRoute';
+import UploadPage from './pages/UploadPage';
 
 function App() {
   // Hapus pembungkus <Router> dari sini
@@ -16,6 +17,7 @@ function App() {
       {/* Rute Terproteksi */}
       <Route element={<ProtectedRoute />}>
         <Route path="/home" element={<HomePage />} />
+        <Route path="/upload" element={<UploadPage />} />
         {/* Tambahkan rute terproteksi lainnya di sini nanti */}
       </Route>
 

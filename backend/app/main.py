@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 # Impor router yang telah kita buat
-from app.routers import users
+from app.routers import users,music
 
 # Membuat instance aplikasi FastAPI
 app = FastAPI(
@@ -33,6 +33,7 @@ app.add_middleware(
 # Mendaftarkan router pengguna ke aplikasi utama.
 # Semua endpoint dari users.py sekarang akan aktif.
 app.include_router(users.router)
+app.include_router(music.router) 
 
 
 # --- Endpoints ---
