@@ -1,31 +1,25 @@
 import React from 'react';
-import { useAuth } from '../context/AuthContext';
-import './HomePage.css'; // Kita akan buat file CSS ini
+import Sidebar from '../components/Sidebar';
+import './HomePage.css';
+import MusicCard from '../components/MusicCard'; 
 
 const HomePage = () => {
-  const { userProfile, logout } = useAuth();
-
-  if (!userProfile) {
-    return <div>Loading user data...</div>;
-  }
-
   return (
-    <div className="home-container">
-      <header className="home-header">
-        <h1>VibeStream</h1>
-        <div className="user-info">
-          {/* Tampilkan email, gunakan 'N/A' jika tidak ada */}
-          <span>{userProfile.email || 'N/A'}</span>
-          {/* Gunakan tombol pixelated yang sudah kita buat sebelumnya */}
-          <button className="pixel-button accent" onClick={logout}>
-            Logout
-          </button>
+    <div className="app-layout">
+      <Sidebar />
+      <main className="main-content">
+        <header className="main-header">
+          <h2>Dashboard</h2>
+          <p>Welcome back! Here's the latest public music on VibeStream.</p>
+        </header>
+        
+        <div className="music-grid">
+          {/* Ini adalah data dummy. Nanti akan kita ganti dengan data dari API */}
+          <MusicCard title="Pixel Paradise" artist="Synthwave Kid" />
+          <MusicCard title="8-Bit Adventure" artist="Chip Tune" />
+          <MusicCard title="Sunset Drive" artist="RetroWave" />
+          <MusicCard title="Neon Nights" artist="VaporFunk" />
         </div>
-      </header>
-      <main className="home-content">
-        <h2>Welcome to your Dashboard</h2>
-        <p>This is where your music journey begins. Soon you will be able to see playlists, upload music, and more!</p>
-        <p>Your user ID is: {userProfile.id}</p>
       </main>
     </div>
   );

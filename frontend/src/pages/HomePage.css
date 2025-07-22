@@ -1,40 +1,33 @@
-.home-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
+.app-layout {
+  display: flex;
 }
 
-.home-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: var(--border-width) solid var(--color-border);
-  padding-bottom: 20px;
+.main-content {
+  /* Margin kiri sebesar lebar sidebar */
+  margin-left: 250px; 
+  width: calc(100% - 250px); /* Mengisi sisa lebar */
+  padding: 40px;
+  min-height: 100vh;
+}
+
+.main-header {
   margin-bottom: 40px;
 }
 
-.home-header h1 {
-  margin: 0;
-  font-size: 1.8rem;
-}
-
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 20px; /* Jarak antar elemen */
-}
-
-.user-info span {
-  font-size: 0.9rem;
-}
-
-/* Kurangi padding tombol logout agar tidak terlalu besar */
-.user-info .pixel-button {
-  padding: 8px 15px;
-  font-size: 0.8rem;
-}
-
-.home-content h2 {
-  font-size: 1.5rem;
+.main-header h2 {
+  font-size: 2.5rem;
+  margin: 0 0 10px 0;
   color: var(--color-primary);
+}
+
+.main-header p {
+  font-size: 1.1rem;
+  color: #aaa;
+}
+
+.music-grid {
+  display: grid;
+  /* Membuat kolom responsif: minimal 250px, maksimal 1fr */
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 30px;
 }
