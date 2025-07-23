@@ -8,6 +8,7 @@ import Sidebar from './components/Sidebar';
 import MusicPlayer from './components/MusicPlayer';
 import MyMusicPage from './pages/MyMusicPage';
 import PlaylistDetailPage from './pages/PlaylistDetailPage';
+import { Toaster } from 'react-hot-toast';
 import { useAuth } from './context/AuthContext'; 
 function App() {
   const { session } = useAuth();
@@ -15,6 +16,19 @@ function App() {
   // Tampilkan layout utama jika ada sesi, jika tidak, hanya tampilkan rute publik
   return (
     <>
+      <Toaster 
+        position="top-center"
+        toastOptions={{
+          className: '',
+          style: {
+            margin: '40px',
+            background: '#333',
+            color: '#fff',
+            border: '2px solid #555',
+          },
+        }}
+      />
+
       {session ? (
         <div className="app-layout">
           <Sidebar />

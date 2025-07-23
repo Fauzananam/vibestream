@@ -1,27 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import apiClient from '../api/apiClient';
 import './MyMusicPage.css';
-import { FaPlus } from 'react-icons/fa';
+import { FaPlus, FaTimes } from 'react-icons/fa';
+import toast from 'react-hot-toast';
 
 const MyMusicPage = () => {
-    // State untuk menyimpan data dari API
     const [myUploads, setMyUploads] = useState([]);
     const [myPlaylists, setMyPlaylists] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     
-    // State untuk mengontrol UI form pembuatan playlist
-    const [showForm, setShowForm] = useState(false);
+    // State untuk mengontrol modal
+    const [isPlaylistModalOpen, setIsPlaylistModalOpen] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [newPlaylistName, setNewPlaylistName] = useState('');
     const [newPlaylistDesc, setNewPlaylistDesc] = useState('');
     const [newPlaylistVisibility, setNewPlaylistVisibility] = useState('public');
 
-    // State untuk mengontrol modal "Add to Playlist"
     const [songToAdd, setSongToAdd] = useState(null);
 
     const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 
-    const fetchAllData = async () => {
+    // Gunakan useCallback agar fungsi tidak dibuat ulang pada setiap render
+    const fetchAllData = useCallback(async () => {
         setIsLoading(true);
         try {
             const [uploadsRes, playlistsRes] = await Promise.all([
@@ -32,127 +33,136 @@ const MyMusicPage = () => {
             setMyPlaylists(playlistsRes.data);
         } catch (error) {
             console.error("Failed to fetch data:", error);
+            toast.error('Could not fetch your library.');
         } finally {
             setIsLoading(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
         fetchAllData();
-    }, []);
+    }, [fetchAllData]);
 
     const handleCreatePlaylist = async (e) => {
         e.preventDefault();
-        if (!newPlaylistName) {
-            alert("Playlist name is required.");
-            return;
-        }
+        if (!newPlaylistName) return toast.error("Playlist name is required.");
+        
+        setIsSubmitting(true);
+        const toastId = toast.loading('Creating playlist...');
+
         try {
             await apiClient.post('/playlists/', {
                 name: newPlaylistName,
                 description: newPlaylistDesc,
                 visibility: newPlaylistVisibility
             });
-            setShowForm(false);
+            toast.success('Playlist created!', { id: toastId });
+            
+            setIsPlaylistModalOpen(false);
             setNewPlaylistName('');
             setNewPlaylistDesc('');
             setNewPlaylistVisibility('public');
             fetchAllData();
         } catch (error) {
             console.error("Failed to create playlist:", error);
-            alert("Could not create playlist.");
+            toast.error(`Error: ${error.response?.data?.detail || 'Could not create playlist.'}`, { id: toastId });
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
     const handleAddSongToPlaylist = async (playlistId) => {
         if (!songToAdd) return;
+
+        const toastId = toast.loading(`Adding '${songToAdd.title}'...`);
         try {
             await apiClient.post(`/playlists/${playlistId}/add-music`, {
                 music_id: songToAdd.id
             });
-            alert(`Added '${songToAdd.title}' to the playlist!`);
-            // Refresh data untuk melihat perubahan (opsional tapi bagus)
+            toast.success('Song added!', { id: toastId });
             fetchAllData();
         } catch (error) {
             console.error(error);
-            alert("Failed to add song. It might already be in the playlist.");
+            toast.error(`Error: ${error.response?.data?.detail || 'Failed to add song.'}`, { id: toastId });
         } finally {
             setSongToAdd(null);
         }
     };
 
-    if (isLoading) {
-        return <p>Loading your music library...</p>;
-    }
+    if (isLoading) return <div className="loading-container"><p>Loading your music library...</p></div>;
 
     return (
         <>
+            {/* --- MODAL UNTUK BUAT PLAYLIST --- */}
+            {isPlaylistModalOpen && (
+                <div className="modal-backdrop" onClick={() => setIsPlaylistModalOpen(false)}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+                        <form onSubmit={handleCreatePlaylist} className="create-playlist-form">
+                            <button type="button" className="close-modal-btn" onClick={() => setIsPlaylistModalOpen(false)}><FaTimes /></button>
+                            <h3>Create New Playlist</h3>
+                            <input type="text" placeholder="Playlist Name" value={newPlaylistName} onChange={e => setNewPlaylistName(e.target.value)} required />
+                            <textarea placeholder="Description (optional)" value={newPlaylistDesc} onChange={e => setNewPlaylistDesc(e.target.value)}></textarea>
+                            <div className="visibility-selector">
+                                <label>Visibility:</label>
+                                <select value={newPlaylistVisibility} onChange={e => setNewPlaylistVisibility(e.target.value)}>
+                                    <option value="public">Public</option>
+                                    <option value="private">Private</option>
+                                </select>
+                            </div>
+                            <button type="submit" className="pixel-button" disabled={isSubmitting}>
+                                {isSubmitting ? 'Creating...' : 'Create Playlist'}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* --- MODAL UNTUK TAMBAH LAGU --- */}
+            {songToAdd && (
+                <div className="modal-backdrop" onClick={() => setSongToAdd(null)}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+                        <button type="button" className="close-modal-btn" onClick={() => setSongToAdd(null)}><FaTimes /></button>
+                        <h4>Add "{songToAdd.title}" to...</h4>
+                        {myPlaylists.length > 0 ? (
+                            <div className="playlist-selection-list">
+                                {myPlaylists.map(pl => (
+                                    <button key={pl.id} className="playlist-select-item" onClick={() => handleAddSongToPlaylist(pl.id)}>
+                                        {pl.name} <span className={`visibility-tag small ${pl.visibility}`}>{pl.visibility}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        ) : <p>You don't have any playlists yet. Create one first!</p>}
+                    </div>
+                </div>
+            )}
+
             <header className="main-header">
                 <h2>My Music & Playlists</h2>
                 <p>Curate your vibes and share them with the world.</p>
             </header>
 
-            {songToAdd && (
-                <div className="add-to-playlist-modal-backdrop" onClick={() => setSongToAdd(null)}>
-                    <div className="add-to-playlist-modal" onClick={e => e.stopPropagation()}>
-                        <h4>Add "{songToAdd.title}" to...</h4>
-                        {myPlaylists.length > 0 ? (
-                            myPlaylists.map(pl => (
-                                <button key={pl.id} onClick={() => handleAddSongToPlaylist(pl.id)}>
-                                    {pl.name} ({pl.visibility})
-                                </button>
-                            ))
-                        ) : (
-                            <p>You don't have any playlists yet. Create one first!</p>
-                        )}
-                    </div>
-                </div>
-            )}
-
             <section className="library-section">
-                <h3>My Playlists</h3>
-                <button className="pixel-button" onClick={() => setShowForm(!showForm)}>
-                    {showForm ? 'Cancel' : '+ Create New Playlist'}
-                </button>
-
-                {showForm && (
-                    <form onSubmit={handleCreatePlaylist} className="create-playlist-form">
-                        <h4>New Playlist Details</h4>
-                        <input type="text" placeholder="Playlist Name" value={newPlaylistName} onChange={e => setNewPlaylistName(e.target.value)} required />
-                        <textarea placeholder="Description (optional)" value={newPlaylistDesc} onChange={e => setNewPlaylistDesc(e.target.value)}></textarea>
-                        <div className="visibility-selector">
-                            <label>Visibility:</label>
-                            <select value={newPlaylistVisibility} onChange={e => setNewPlaylistVisibility(e.target.value)}>
-                                <option value="public">Public</option>
-                                <option value="private">Private</option>
-                            </select>
-                        </div>
-                        <button type="submit">Create Playlist</button>
-                    </form>
-                )}
-                <div style={{ height: '16px' }}></div>
-                <div className="playlist-grid">
-                    {myPlaylists.map(pl => {
-                        // --- PERBAIKAN UTAMA DI SINI ---
-                        // Tentukan URL gambar dengan cara yang lebih aman dan bersih
-                        const imageUrl = pl.cover_art_path 
-                            ? `${SUPABASE_URL}/storage/v1/object/public/vibe-storage/${pl.cover_art_path}` 
-                            : 'https://placehold.co/200/2a2a2a/ffffff?text=VibeStream';
-
-                        return (
-                            <Link to={`/playlist/${pl.id}`} key={pl.id} className="playlist-card-link">
-                                <div className="playlist-card">
-                                    <img 
-                                        src={imageUrl} 
-                                        alt={pl.name} 
-                                    />
-                                    <h4>{pl.name}</h4>
-                                    <span className={`visibility-tag ${pl.visibility}`}>{pl.visibility}</span>
-                                </div>
-                            </Link>
-                        );
-                    })}
+                <div className="section-header">
+                    <h3>My Playlists</h3>
+                    <button className="pixel-button" onClick={() => setIsPlaylistModalOpen(true)}>
+                        <FaPlus /> Create New
+                    </button>
                 </div>
+                <div className="playlist-grid">
+                    {myPlaylists.map(pl => (
+                        <Link to={`/playlist/${pl.id}`} key={pl.id} className="playlist-card-link">
+                            <div className="playlist-card">
+                                <img 
+                                    src={pl.cover_art_path ? `${SUPABASE_URL}/storage/v1/object/public/vibe-storage/${pl.cover_art_path}` : 'https://placehold.co/200/2a2a2a/ffffff?text=VibeStream'} 
+                                    alt={pl.name} 
+                                />
+                                <h4>{pl.name}</h4>
+                                <span className={`visibility-tag ${pl.visibility}`}>{pl.visibility}</span>
+                            </div>
+                        </Link>
+                    ))}
+                </div>
+                {myPlaylists.length === 0 && <p className="empty-state">Your playlists will appear here.</p>}
             </section>
 
             <section className="library-section">
@@ -160,14 +170,12 @@ const MyMusicPage = () => {
                 <div className="uploads-list">
                     {myUploads.length > 0 ? myUploads.map(song => (
                         <div key={song.id} className="upload-item">
-                            <span>{song.title} - {song.artist_name}</span>
-                            <button onClick={() => setSongToAdd(song)} title="Add to playlist">
+                            <span className="upload-item-title">{song.title} - {song.artist_name}</span>
+                            <button onClick={() => setSongToAdd(song)} className="add-btn" title="Add to playlist">
                                 <FaPlus />
                             </button>
                         </div>
-                    )) : (
-                        <p>You haven't uploaded any music yet.</p>
-                    )}
+                    )) : <p className="empty-state">You haven't uploaded any music yet.</p>}
                 </div>
             </section>
         </>
