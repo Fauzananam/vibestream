@@ -48,22 +48,27 @@ def upload_file(
             detail=f"Could not upload file: {str(e)}"
         )
 
-# Endpoint untuk menyimpan metadata tetap sama, tidak perlu diubah.
-@router.post("/")
-def upload_music_metadata(
-    music_data: MusicCreate,
-    current_user: User = Depends(get_current_user)
-):
+@router.get("/")
+def get_all_music():
     """
-    Menyimpan metadata lagu ke database setelah file diupload ke storage.
+    Mengambil daftar semua lagu dari database.
+    Nanti bisa kita tambahkan paginasi di sini.
     """
     try:
-        data_to_insert = music_data.model_dump()
-        data_to_insert['uploader_id'] = current_user.id
-        response = supabase.table('music').insert(data_to_insert).execute()
-        return {"status": "success", "data": response.data}
+        response = supabase.table('music').select('*').order('created_at', desc=True).execute()
+        
+        # PENTING: Ubah file_path menjadi URL publik yang bisa diakses
+        base_url = f"{supabase.supabase_url}/storage/v1/object/public/{BUCKET_NAME}/"
+        
+        for item in response.data:
+            # Konstruksi URL lengkap untuk file musik
+            if item.get('file_path'):
+                item['file_url'] = f"{base_url}{item['file_path']}"
+            
+            # Konstruksi URL lengkap untuk cover art
+            if item.get('cover_art_path'):
+                item['cover_art_url'] = f"{base_url}{item['cover_art_path']}"
+
+        return response.data
     except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Could not save music metadata: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=str(e))

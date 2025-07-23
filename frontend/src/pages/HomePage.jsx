@@ -1,9 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import apiClient from '../api/apiClient';
 import Sidebar from '../components/Sidebar';
+import MusicCard from '../components/MusicCard';
+import MusicPlayer from '../components/MusicPlayer';
 import './HomePage.css';
-import MusicCard from '../components/MusicCard'; 
 
 const HomePage = () => {
+  const [musicList, setMusicList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    apiClient.get('/music/')
+      .then(response => {
+        // Filter data yang tidak valid sebelum menyimpannya ke state
+        const validMusic = response.data.filter(item => item && item.id);
+        setMusicList(validMusic);
+        setIsLoading(false);
+      })
+      .catch(error => {
+        console.error("Failed to fetch music:", error);
+        setIsLoading(false);
+      });
+  }, []);
+
   return (
     <div className="app-layout">
       <Sidebar />
@@ -13,14 +32,19 @@ const HomePage = () => {
           <p>Welcome back! Here's the latest public music on VibeStream.</p>
         </header>
         
-        <div className="music-grid">
-          {/* Ini adalah data dummy. Nanti akan kita ganti dengan data dari API */}
-          <MusicCard title="Pixel Paradise" artist="Synthwave Kid" />
-          <MusicCard title="8-Bit Adventure" artist="Chip Tune" />
-          <MusicCard title="Sunset Drive" artist="RetroWave" />
-          <MusicCard title="Neon Nights" artist="VaporFunk" />
-        </div>
+        {isLoading ? <p>Loading music...</p> : (
+          <div className="music-grid">
+            {/* 
+              Sekarang kita hanya memetakan `musicList` yang sudah dijamin
+              berisi item-item yang valid.
+            */}
+            {musicList.map(music => (
+              <MusicCard key={music.id} music={music} />
+            ))}
+          </div>
+        )}
       </main>
+      <MusicPlayer />
     </div>
   );
 };
