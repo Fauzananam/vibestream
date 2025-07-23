@@ -3,11 +3,13 @@ import apiClient from '../api/apiClient';
 import Sidebar from '../components/Sidebar';
 import MusicCard from '../components/MusicCard';
 import MusicPlayer from '../components/MusicPlayer';
+import { usePlayerStore } from '../store/playerStore';
 import './HomePage.css';
 
 const HomePage = () => {
   const [musicList, setMusicList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { playMusic } = usePlayerStore();
 
   useEffect(() => {
     apiClient.get('/music/')
@@ -23,29 +25,30 @@ const HomePage = () => {
       });
   }, []);
 
+  const handlePlayMusic = (music) => {
+    // Panggil aksi dari store dengan lagu yang di-klik dan seluruh daftar lagu
+    playMusic(music, musicList);
+  };
+
   return (
-    <div className="app-layout">
-      <Sidebar />
-      <main className="main-content">
-        <header className="main-header">
-          <h2>Dashboard</h2>
-          <p>Welcome back! Here's the latest public music on VibeStream.</p>
-        </header>
-        
-        {isLoading ? <p>Loading music...</p> : (
-          <div className="music-grid">
-            {/* 
-              Sekarang kita hanya memetakan `musicList` yang sudah dijamin
-              berisi item-item yang valid.
-            */}
-            {musicList.map(music => (
-              <MusicCard key={music.id} music={music} />
-            ))}
-          </div>
-        )}
-      </main>
-      <MusicPlayer />
-    </div>
+    <> {/* Gunakan Fragment karena layout utama sudah ada di App.jsx */}
+      <header className="main-header">
+        <h2>Dashboard</h2>
+        <p>Welcome back! Here's the latest public music on VibeStream.</p>
+      </header>
+      
+      {isLoading ? <p>Loading music...</p> : (
+        <div className="music-grid">
+          {musicList.map(music => (
+            <MusicCard 
+              key={music.id} 
+              music={music} 
+              onPlay={handlePlayMusic} // Teruskan fungsi handler ke kartu
+            />
+          ))}
+        </div>
+      )}
+    </>
   );
 };
 
