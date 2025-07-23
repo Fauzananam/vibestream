@@ -9,24 +9,13 @@ const Sidebar = () => {
   const { userProfile, logout } = useAuth();
 
   const navItems = [
-    {
-      to: '/home',
-      icon: FaHome,
-      label: 'Home'
-    },
-    {
-      to: '/upload',
-      icon: FaPlus,
-      label: 'Upload Music'
-    },
-    {
-      to: '/my-music',
-      icon: FaMusic,
-      label: 'My Music'
-    }
+    { to: '/home', icon: FaHome, label: 'Home' },
+    { to: '/upload', icon: FaPlus, label: 'Upload Music' },
+    { to: '/my-music', icon: FaMusic, label: 'My Music' }
   ];
 
   const handleLogout = () => {
+    // Menambahkan konfirmasi sebelum logout
     if (window.confirm('Are you sure you want to logout?')) {
       logout();
     }
@@ -43,9 +32,7 @@ const Sidebar = () => {
           <NavLink 
             key={to}
             to={to} 
-            className={({ isActive }) => 
-              `nav-link ${isActive ? 'active' : ''}`
-            }
+            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
             aria-label={label}
           >
             <Icon className="nav-icon" aria-hidden="true" />

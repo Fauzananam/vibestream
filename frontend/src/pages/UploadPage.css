@@ -1,8 +1,9 @@
 .upload-form {
-    max-width: 600px;
+    max-width: 700px;
     background-color: #2a2a2a;
     padding: 30px;
     border: var(--border-width) solid var(--color-border);
+    box-shadow: 8px 8px 0 var(--color-shadow);
 }
 
 .form-group {
@@ -18,6 +19,7 @@
 
 .form-group input[type="text"] {
     width: 100%;
+    box-sizing: border-box;
     padding: 10px;
     background-color: #1a1a1a;
     border: var(--border-width) solid #444;
@@ -26,16 +28,124 @@
     font-size: 1rem;
 }
 
-.form-group input[type="file"] {
-    font-family: var(--font-family-sans);
-}
-
 .upload-form .pixel-button {
     width: 100%;
+    margin-top: 20px;
 }
 
 .status-message {
     margin-top: 20px;
     font-weight: 700;
     color: var(--color-primary);
+}
+
+.form-group-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.custom-file-input input[type="file"] {
+    display: none;
+}
+
+.custom-file-input .file-label {
+    background-color: #3a3a3a;
+    border: var(--border-width) solid #444;
+    padding: 12px;
+    font-family: var(--font-family-sans);
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: background-color 0.2s;
+}
+
+.custom-file-input .file-label:hover {
+    background-color: #4a4a4a;
+}
+
+.file-name {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8rem;
+    color: #aaa;
+    margin-top: 10px;
+    word-break: break-all;
+}
+
+.file-name svg {
+    color: #28a745;
+    flex-shrink: 0;
+}
+
+.upload-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(42, 42, 42, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.progress-bar-container {
+    width: 80%;
+    max-width: 500px;
+    height: 30px;
+    background: #1a1a1a;
+    border: var(--border-width) solid var(--color-border);
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background-color: var(--color-primary);
+    width: 0%; /* Dimulai dari 0% */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: var(--font-family-pixel);
+    font-size: 1rem;
+    transition: width 0.3s ease-in-out;
+}
+
+.upload-overlay .status-message {
+    font-size: 1.2rem;
+}
+
+.status-container {
+    margin-top: 20px;
+    height: 30px; /* Beri ruang agar layout tidak "melompat" */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.status-message {
+    font-family: var(--font-family-pixel); /* Gunakan font pixel untuk vibe game */
+    font-size: 1rem;
+    color: var(--color-primary);
+    margin: 0;
+    
+    /* Menerapkan animasi */
+    animation: fadeInAndUp 0.5s ease-out forwards;
+}
+
+/* Definisikan keyframes untuk animasi */
+@keyframes fadeInAndUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
