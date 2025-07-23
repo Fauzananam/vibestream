@@ -1,7 +1,7 @@
 // frontend/src/components/Sidebar.jsx
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { FaHome, FaMusic, FaPlus, FaUser, FaSignOutAlt } from 'react-icons/fa';
+import { FaHome, FaMusic, FaPlus, FaUser, FaSignOutAlt, FaShieldAlt } from 'react-icons/fa';
 import './Sidebar.css';
 import { useAuth } from '../context/AuthContext';
 
@@ -39,6 +39,12 @@ const Sidebar = () => {
             <span className="nav-text">{label}</span>
           </NavLink>
         ))}
+        {userProfile?.role === 'owner' && (
+          <NavLink to="/admin" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+            <FaShieldAlt className="nav-icon" />
+            <span className="nav-text">Admin Panel</span>
+          </NavLink>
+        )}
       </nav>
 
       <footer className="sidebar-footer">

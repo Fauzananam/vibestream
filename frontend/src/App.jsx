@@ -8,6 +8,7 @@ import Sidebar from './components/Sidebar';
 import MusicPlayer from './components/MusicPlayer';
 import MyMusicPage from './pages/MyMusicPage';
 import PlaylistDetailPage from './pages/PlaylistDetailPage';
+import AdminPage from './pages/AdminPage';
 import { Toaster } from 'react-hot-toast';
 import { useAuth } from './context/AuthContext'; 
 function App() {
@@ -39,6 +40,7 @@ function App() {
                 <Route path="/upload" element={<UploadPage />} />
                 <Route path="/my-music" element={<MyMusicPage />} />
                 <Route path="/playlist/:id" element={<PlaylistDetailPage />} />
+                <Route path="/admin" element={<AdminPage />} />
                 <Route path="/" element={<Navigate to="/home" />} />
               </Route>
               <Route path="*" element={<h1>404: Page Not Found</h1>} />
