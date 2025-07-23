@@ -6,9 +6,11 @@ import UploadPage from './pages/UploadPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import Sidebar from './components/Sidebar';
 import MusicPlayer from './components/MusicPlayer';
+import MyMusicPage from './pages/MyMusicPage';
+import PlaylistDetailPage from './pages/PlaylistDetailPage';
 import { useAuth } from './context/AuthContext'; 
 function App() {
-  const { session } = useAuth(); // Dapatkan status sesi
+  const { session } = useAuth();
 
   // Tampilkan layout utama jika ada sesi, jika tidak, hanya tampilkan rute publik
   return (
@@ -21,12 +23,14 @@ function App() {
               <Route element={<ProtectedRoute />}>
                 <Route path="/home" element={<HomePage />} />
                 <Route path="/upload" element={<UploadPage />} />
+                <Route path="/my-music" element={<MyMusicPage />} />
+                <Route path="/playlist/:id" element={<PlaylistDetailPage />} />
                 <Route path="/" element={<Navigate to="/home" />} />
               </Route>
               <Route path="*" element={<h1>404: Page Not Found</h1>} />
             </Routes>
           </main>
-          <MusicPlayer /> {/* Player sekarang berada di layout utama */}
+          <MusicPlayer />
         </div>
       ) : (
         <Routes>

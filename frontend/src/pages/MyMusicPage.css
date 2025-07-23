@@ -1,0 +1,116 @@
+.library-section {
+    margin-top: 40px;
+}
+.library-section h3 {
+    font-size: 1.5rem;
+    border-bottom: 2px solid #444;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+.playlist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+.playlist-card {
+    background-color: #2a2a2a;
+    border: var(--border-width) solid #444;
+    padding: 15px;
+}
+.playlist-card h4 {
+    margin: 0 0 10px 0;
+    font-family: var(--font-family-sans);
+}
+.visibility-tag {
+    font-family: var(--font-family-pixel);
+    font-size: 0.7rem;
+    padding: 3px 6px;
+    border-radius: 4px;
+}
+.visibility-tag.public {
+    background-color: var(--color-primary);
+    color: white;
+}
+.visibility-tag.private {
+    background-color: var(--color-accent);
+    color: white;
+}
+.create-playlist-form {
+    background-color: #2a2a2a;
+    border: var(--border-width) solid var(--color-border);
+    padding: 20px;
+    margin-top: 20px;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.create-playlist-form input,
+.create-playlist-form textarea,
+.create-playlist-form select,
+.create-playlist-form button {
+    font-family: var(--font-family-sans);
+    padding: 10px;
+    font-size: 1rem;
+    background-color: #1a1a1a;
+    border: 2px solid #444;
+    color: var(--color-text);
+}
+.create-playlist-form button {
+    cursor: pointer;
+    background-color: var(--color-primary);
+    border: none;
+    font-weight: 700;
+}
+.uploads-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.upload-item {
+    background-color: #2a2a2a;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.upload-item button {
+    background: none;
+    border: none;
+    color: var(--color-text);
+    cursor: pointer;
+    font-size: 1rem;
+}
+.playlist-card-link {
+    text-decoration: none;
+    color: inherit;
+}
+.playlist-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+.add-to-playlist-modal-backdrop {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.add-to-playlist-modal {
+    background-color: #2a2a2a;
+    padding: 20px;
+    border: var(--border-width) solid var(--color-border);
+    width: 300px;
+}
+.add-to-playlist-modal button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    cursor: pointer;
+}
