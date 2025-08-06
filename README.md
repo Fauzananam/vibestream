@@ -7,6 +7,12 @@
 
 VibeStream is a modern, open-source music streaming web application with a unique retro-pixel aesthetic. It allows users to upload their own music, create public or private playlists, and enjoy a seamless listening experience with a persistent, floating music player. The project is built with a powerful Python backend and a dynamic React frontend.
 
+## 📸 Screenshots
+
+| Login Page                               | Main Dashboard                             | Upload Page                                |
+| :---------------------------------------: | :----------------------------------------: | :----------------------------------------: |
+| ![Login Page](docs/screenshot-login.png) | ![Dashboard](docs/screenshot-dashboard.png) | ![Upload Page](docs/screenshot-upload.png) |
+
 ## ✨ Key Features
 
 *   **Google OAuth Authentication**: Secure and easy login for users.
@@ -14,12 +20,12 @@ VibeStream is a modern, open-source music streaming web application with a uniqu
     *   **User**: Can upload music, create public/private playlists.
     *   **Admin**: Helps moderate public content.
     *   **Owner**: Has full control, including user role management.
-*   **Music Upload**: Users can upload their own audio files and cover art.
-*   **Playlist Creation**: Full-featured playlist system with `public` and `private` visibility settings, respecting user privacy.
-*   **Floating Music Player**: A persistent, feature-rich player that continues playback across all pages, including progress bar, next/previous, and skip controls.
+*   **Music & Cover Art Upload**: Users can upload their own audio files and cover art.
+*   **Dynamic Playlist System**: Full-featured playlist creation with `public` and `private` visibility settings. Playlist covers are automatically generated from the first song added.
+*   **Floating "VibeDeck" Player**: A persistent, feature-rich player that continues playback across pages, complete with progress bar, next/previous, and skip controls.
 *   **Secure Admin Panel**: An exclusive panel for the `owner` to manage user roles.
 *   **Modern-Retro UI**: A unique user interface that blends modern layout principles with pixel-perfect fonts and retro-style elements.
-*   **Interactive Notifications**: User-friendly toast notifications and sound effects for a more engaging experience.
+*   **Interactive Experience**: User-friendly toast notifications and real-time sound effects (generated via Web Audio API) for a more engaging experience.
 
 ## 🛠️ Technology Stack
 
@@ -50,30 +56,16 @@ Follow these instructions to get a local copy of VibeStream up and running for d
 
 2.  **Setup Supabase**
     *   Create a new project on [Supabase](https://supabase.com/).
-    *   Navigate to the **SQL Editor** and run all the SQL scripts created during the project to set up tables (`profiles`, `music`, `playlists`), triggers, and Row Level Security (RLS) policies.
-    *   Navigate to **Storage** and create a new **public** bucket named `vibe-storage`. Set up the access policies as defined in the project steps.
+    *   Navigate to the **SQL Editor** and run the master setup script located at `vibestreamsupabase.sql` to create all tables, triggers, and security policies.
+    *   Navigate to **Storage** and create a new **public** bucket named `vibe-storage`. Ensure you set up the access policies as defined in the SQL script.
 
 3.  **Setup Google OAuth**
-    *   Go to the Google Cloud Console and create a new project.
-    *   Navigate to **APIs & Services > OAuth consent screen**, configure it for **External** users, and add the required app information.
-    *   Go to **Credentials**, create a new **OAuth 2.0 Client ID** for a **Web application**.
-    *   Add your Supabase callback URL to the "Authorized redirect URIs". You can find this URL in your Supabase project under **Authentication > Providers > Google**.
-    *   Copy your **Client ID** and **Client Secret**.
-    *   In your Supabase project, go to **Authentication > Providers > Google**, enable it, and paste your Client ID and Secret.
+    *   Follow the official Supabase guide for setting up [Google OAuth](https://supabase.com/docs/guides/auth/social-login/google).
+    *   Copy your **Client ID** and **Client Secret** and add them to the Google provider settings in your Supabase dashboard.
 
 4.  **Configure Environment Variables**
-    *   In the `backend/` folder, create a `.env` file and add your Supabase credentials:
-        ```env
-        # backend/.env
-        SUPABASE_URL="YOUR_SUPABASE_PROJECT_URL"
-        SUPABASE_SERVICE_KEY="YOUR_SUPABASE_SERVICE_ROLE_KEY"
-        ```
-    *   In the `frontend/` folder, create a `.env.local` file:
-        ```env
-        # frontend/.env.local
-        VITE_SUPABASE_URL="YOUR_SUPABASE_PROJECT_URL"
-        VITE_SUPABASE_ANON_KEY="YOUR_SUPABASE_ANON_KEY"
-        ```
+    *   Copy `.env.example` to `.env` in the `backend/` folder and fill in your Supabase credentials.
+    *   Copy `.env.local.example` to `.env.local` in the `frontend/` folder and fill in your Supabase credentials.
 
 5.  **Run the Project Setup Script**
     This script will create a Python virtual environment and install all required backend and frontend dependencies.
@@ -83,19 +75,18 @@ Follow these instructions to get a local copy of VibeStream up and running for d
     ```
 
 6.  **Set Your Role to Owner**
-    To access the Admin Panel, you must manually set your role.
+    To access the Admin Panel, you must manually set your role after signing up.
     *   Sign up for your application using Google login.
     *   Go to your Supabase **Table Editor**, open the `profiles` table.
-    *   Find the row corresponding to your user and change the value in the `role` column from `user` to `owner`.
+    *   Find your user row and change the value in the `role` column from `user` to `owner`.
 
 7.  **Run the Development Servers**
-    This will start both the Python backend and the React frontend concurrently.
     ```bash
     chmod +x startdev.sh
     ./startdev.sh
     ```
-    *   Backend will be available at `http://127.0.0.1:8000`
-    *   Frontend will be available at `http://localhost:5173`
+    *   Backend: `http://127.0.0.1:8000`
+    *   Frontend: `http://localhost:5173`
 
 ## 📜 License & Disclaimers
 
@@ -111,4 +102,4 @@ The owner and contributors of the VibeStream project **do not claim any ownershi
 
 ## ✍️ Author
 
-*   **[Fauzananam]** - *Initial work & Project Lead* - [Fauzananam](https://github.com/Fauzananam)
+*   **Fauzananam** - *Initial work & Project Lead* - [Fauzananam](https://github.com/Fauzananam)
